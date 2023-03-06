@@ -35,7 +35,7 @@ export class AuthService {
     }
 
     const isEqual = await compare(login.password, user.password);
-    if (isEqual) {
+    if (!isEqual) {
       throw new NotFoundException('Contraseña incorrecta');
     }
 
@@ -59,12 +59,16 @@ export class AuthService {
     const array = [...rutas].map((item) => item[1]);
 
     return {
-      user,
+      user: {
+        id: user.id,
+        perfil: user.perfils,
+        persona: user.persona,
+        usuario: user.usuario,
+      },
       token: this.getJWTToken({
         id: user.id,
         rutas: array,
         roles: arrayRoles,
-        perfil: perfilRoles.nombre,
       }),
     };
   }
