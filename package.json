@@ -1,8 +1,8 @@
 {
-  "name": "utla-api",
+  "name": "clinica-api",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Edwin Melara Landaverde <edwin.melara.landaverde@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
