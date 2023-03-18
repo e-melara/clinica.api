@@ -6,6 +6,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 // modules
 import { AuthModule } from './auth/auth.module';
+import { PacientesModule } from './pacientes/pacientes.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      synchronize: false,
+      synchronize: true,
       autoLoadEntities: true,
       ssl: true,
       logging: true,
@@ -33,6 +34,7 @@ import { AuthModule } from './auth/auth.module';
       },
     }),
     AuthModule,
+    PacientesModule,
   ],
   controllers: [],
   providers: [],

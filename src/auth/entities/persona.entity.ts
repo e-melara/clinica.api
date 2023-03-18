@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { Usuario } from './usuario.entity';
+import { Paciente } from 'src/pacientes/entities';
 
 @Entity('mnt_personas')
 export class Persona {
@@ -25,6 +26,9 @@ export class Persona {
 
   @OneToOne(() => Usuario, (usuario) => usuario.persona)
   usuario: Usuario;
+
+  @OneToOne(() => Paciente, (paciente) => paciente.persona)
+  paciente: Paciente;
 
   @ManyToMany(() => Usuario, (usuario) => usuario.perfils, {
     onDelete: 'NO ACTION',
