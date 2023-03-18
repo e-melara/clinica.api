@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { Municipio } from './';
 
@@ -10,6 +10,6 @@ export class Departamento {
   @Column({ name: 'nombre', type: 'varchar', length: 30 })
   nombre: string;
 
-  @OneToOne(() => Municipio, (municipio) => municipio.departamento)
+  @OneToMany(() => Municipio, (municipio) => municipio.departamento)
   municipio: Municipio;
 }

@@ -1,15 +1,16 @@
 import {
   Entity,
   Column,
+  OneToOne,
+  OneToMany,
+  JoinColumn,
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
 } from 'typeorm';
 
-import { Sexo, Municipio } from './';
 import { Persona } from 'src/auth/entities';
+import { Sexo, Municipio, Telefono, PacienteDocumento } from './';
 
 @Entity('mnt_pacientes')
 export class Paciente {
@@ -20,7 +21,7 @@ export class Paciente {
   fechaNacimiento: Date;
   @Column({ name: 'direccion', type: 'text' })
   direccion: string;
-  @Column({ name: 'numero_expendiente', type: 'varchar' })
+  @Column({ name: 'numero_expendiente', type: 'varchar', length: 20 })
   numeroExpendiente: string;
 
   @OneToOne(() => Sexo, (sexo) => sexo.paciente)
@@ -34,6 +35,20 @@ export class Paciente {
   @OneToOne(() => Municipio, (municipio) => municipio.paciente)
   @JoinColumn({ name: 'municipio_id' })
   municipio: number;
+
+  @OneToMany(() => Telefono, (telefono) => telefono.paciente)
+  telefono: Telefono[];
+
+  @OneToMany(
+    () => PacienteDocumento,
+    (pacienteDocumento) => pacienteDocumento.paciente,
+    {
+      onDelete: 'NO ACTION',
+      onUpdate: 'NO ACTION',
+      cascade: true,
+    },
+  )
+  pacienteDocumento: PacienteDocumento[];
 
   @CreateDateColumn()
   created_at: Date;

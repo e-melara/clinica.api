@@ -1,11 +1,27 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Departamento, Municipio, Paciente, Sexo } from './entities';
+import {
+  Sexo,
+  Telefono,
+  Paciente,
+  Documento,
+  Municipio,
+  Departamento,
+  PacienteDocumento,
+} from './entities';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Paciente, Sexo, Municipio, Departamento]),
+    TypeOrmModule.forFeature([
+      Paciente,
+      Sexo,
+      Municipio,
+      Departamento,
+      Documento,
+      Telefono,
+      PacienteDocumento,
+    ]),
   ],
   exports: [TypeOrmModule],
 })

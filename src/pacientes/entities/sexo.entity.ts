@@ -7,7 +7,7 @@ export class Sexo {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int', unsigned: true })
   id: number;
 
-  @Column({ name: 'nombre', type: 'varchar', length: 5 })
+  @Column({ name: 'nombre', type: 'varchar', length: 25 })
   nombre: string;
 
   @OneToOne(() => Paciente, (paciente) => paciente.sexo)

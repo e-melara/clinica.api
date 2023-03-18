@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 import { Departamento, Paciente } from './';
@@ -16,7 +17,7 @@ export class Municipio {
   @Column({ name: 'nombre', type: 'varchar', length: 50 })
   nombre: string;
 
-  @OneToOne(() => Departamento, (departamento) => departamento.municipio)
+  @ManyToOne(() => Departamento, (departamento) => departamento.municipio)
   @JoinColumn({ name: 'departamento_id' })
   departamento: Departamento;
 
