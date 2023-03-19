@@ -3,8 +3,8 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
-  OneToOne,
 } from 'typeorm';
 
 import { Departamento } from './';
@@ -22,6 +22,6 @@ export class Municipio {
   @JoinColumn({ name: 'departamento_id' })
   departamento: Departamento;
 
-  @OneToOne(() => Paciente, (paciente) => paciente.genero)
+  @OneToMany(() => Paciente, (paciente) => paciente.genero)
   paciente?: Paciente;
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Paciente } from 'src/pacientes/entities';
 
@@ -10,6 +10,6 @@ export class Genero {
   @Column({ name: 'nombre', type: 'varchar', length: 20 })
   nombre: string;
 
-  @OneToOne(() => Paciente, (paciente) => paciente.genero)
+  @OneToMany(() => Paciente, (paciente) => paciente.genero)
   paciente?: Paciente;
 }

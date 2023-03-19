@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 
 import { Contacto, Documento } from '.';
@@ -27,22 +28,23 @@ export class Paciente {
   @Column({ name: 'numero_expendiente', type: 'varchar', length: 20 })
   numeroExpendiente: string;
 
-  @OneToOne(() => Genero, (genero) => genero.paciente)
+  @ManyToOne(() => Genero, (genero) => genero.paciente)
   @JoinColumn({ name: 'genero_id' })
-  genero: number;
+  genero: Genero;
 
   @OneToOne(() => Persona, (persona) => persona.paciente)
   @JoinColumn({ name: 'persona_id' })
   persona: Persona;
 
-  @OneToOne(() => Municipio, (municipio) => municipio.paciente)
+  @ManyToOne(() => Municipio, (municipio) => municipio.paciente)
   @JoinColumn({ name: 'municipio_id' })
-  municipio: number;
+  municipio: Municipio;
 
   @OneToMany(() => Contacto, (contacto) => contacto.paciente, {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
     cascade: true,
+    eager: true,
   })
   contactos: Contacto[];
 
@@ -50,6 +52,7 @@ export class Paciente {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
     cascade: true,
+    eager: true,
   })
   documentos: Documento[];
 
