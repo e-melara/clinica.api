@@ -1,13 +1,14 @@
 import {
   Entity,
   Column,
+  ManyToOne,
+  JoinColumn,
   PrimaryGeneratedColumn,
   OneToOne,
-  JoinColumn,
-  ManyToOne,
 } from 'typeorm';
 
-import { Departamento, Paciente } from './';
+import { Departamento } from './';
+import { Paciente } from 'src/pacientes/entities';
 
 @Entity('ctl_municipios')
 export class Municipio {
@@ -21,6 +22,6 @@ export class Municipio {
   @JoinColumn({ name: 'departamento_id' })
   departamento: Departamento;
 
-  @OneToOne(() => Paciente, (paciente) => paciente.municipio)
-  paciente: Paciente;
+  @OneToOne(() => Paciente, (paciente) => paciente.genero)
+  paciente?: Paciente;
 }

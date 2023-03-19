@@ -7,6 +7,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 // modules
 import { AuthModule } from './auth/auth.module';
 import { PacientesModule } from './pacientes/pacientes.module';
+import { CustomModule } from './custom/custom.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { PacientesModule } from './pacientes/pacientes.module';
       },
     }),
     AuthModule,
+    CustomModule,
     PacientesModule,
   ],
   controllers: [],

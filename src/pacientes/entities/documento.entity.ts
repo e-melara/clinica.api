@@ -1,17 +1,27 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { PacienteDocumento } from './paciente.documento.entity';
+import {
+  Entity,
+  JoinColumn,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+} from 'typeorm';
 
-@Entity('ctl_tipo_documento')
+import { Paciente } from '.';
+import { TipoDocumento } from 'src/custom/entities';
+
+@Entity('mnt_pacientes_documentos')
 export class Documento {
-  @PrimaryGeneratedColumn({ name: 'id', type: 'int', unsigned: true })
+  @PrimaryGeneratedColumn({ name: 'id', type: 'bigint' })
   id: number;
 
-  @Column({ name: 'nombre', type: 'varchar', length: 30 })
-  nombre: string;
+  @Column({ name: 'numero_documento', type: 'varchar', length: 25 })
+  numeroDocumento: string;
 
-  @OneToMany(
-    () => PacienteDocumento,
-    (pacienteDocumento) => pacienteDocumento.documento,
-  )
-  pacienteDocumento: PacienteDocumento;
+  @ManyToOne(() => Paciente, (paciente) => paciente.contactos)
+  @JoinColumn({ name: 'paciente_id' })
+  paciente: Paciente;
+
+  @ManyToOne(() => TipoDocumento, (tipoDocumento) => tipoDocumento)
+  @JoinColumn({ name: 'documento_id' })
+  tipo: Documento;
 }

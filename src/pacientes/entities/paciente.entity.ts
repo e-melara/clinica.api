@@ -9,8 +9,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Contacto, Documento } from '.';
 import { Persona } from 'src/auth/entities';
-import { Sexo, Municipio, Telefono, PacienteDocumento } from './';
+import { Genero, Municipio } from 'src/custom/entities';
 
 @Entity('mnt_pacientes')
 export class Paciente {
@@ -19,14 +20,16 @@ export class Paciente {
 
   @Column({ name: 'fecha_nacimiento', type: 'date' })
   fechaNacimiento: Date;
+
   @Column({ name: 'direccion', type: 'text' })
   direccion: string;
+
   @Column({ name: 'numero_expendiente', type: 'varchar', length: 20 })
   numeroExpendiente: string;
 
-  @OneToOne(() => Sexo, (sexo) => sexo.paciente)
-  @JoinColumn({ name: 'sexo_id' })
-  sexo: number;
+  @OneToOne(() => Genero, (genero) => genero.paciente)
+  @JoinColumn({ name: 'genero_id' })
+  genero: number;
 
   @OneToOne(() => Persona, (persona) => persona.paciente)
   @JoinColumn({ name: 'persona_id' })
@@ -36,19 +39,19 @@ export class Paciente {
   @JoinColumn({ name: 'municipio_id' })
   municipio: number;
 
-  @OneToMany(() => Telefono, (telefono) => telefono.paciente)
-  telefono: Telefono[];
+  @OneToMany(() => Contacto, (contacto) => contacto.paciente, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+    cascade: true,
+  })
+  contactos: Contacto[];
 
-  @OneToMany(
-    () => PacienteDocumento,
-    (pacienteDocumento) => pacienteDocumento.paciente,
-    {
-      onDelete: 'NO ACTION',
-      onUpdate: 'NO ACTION',
-      cascade: true,
-    },
-  )
-  pacienteDocumento: PacienteDocumento[];
+  @OneToMany(() => Documento, (documento) => documento.paciente, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+    cascade: true,
+  })
+  documentos: Documento[];
 
   @CreateDateColumn()
   created_at: Date;
