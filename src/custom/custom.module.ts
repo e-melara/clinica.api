@@ -8,6 +8,8 @@ import {
   TipoDocumento,
   TipoContacto,
 } from './entities';
+import { CustomController } from './custom.controller';
+import { CustomService } from './custom.service';
 
 @Module({
   imports: [
@@ -20,5 +22,7 @@ import {
     ]),
   ],
   exports: [TypeOrmModule],
+  controllers: [CustomController],
+  providers: [CustomService],
 })
 export class CustomModule {}
