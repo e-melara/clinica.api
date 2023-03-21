@@ -9,7 +9,7 @@ import {
   TipoDocumento,
 } from 'src/custom/entities';
 import { Persona, Configuracion } from 'src/auth/entities';
-import { Contacto, Documento, Paciente } from './entities';
+import { Paciente } from './entities';
 import { PacienteCreateDto } from './dto/paciente-create.dto';
 
 @Injectable()

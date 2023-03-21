@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-import { Contacto as ContactoPaciente } from 'src/pacientes/entities';
+import { Contacto as ContactoPersona } from 'src/auth/entities';
 
 @Entity('ctl_tipo_contacto')
 export class TipoContacto {
@@ -10,6 +10,6 @@ export class TipoContacto {
   @Column({ name: 'nombre', type: 'varchar', length: 35 })
   nombre: string;
 
-  @OneToMany(() => ContactoPaciente, (contacto) => contacto.tipo)
-  contactoPaciente?: ContactoPaciente;
+  @OneToMany(() => ContactoPersona, (contacto) => contacto.tipo)
+  contactoPersona?: ContactoPersona;
 }

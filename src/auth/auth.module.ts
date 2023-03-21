@@ -14,6 +14,8 @@ import {
   Rol,
   Persona,
   Configuracion,
+  Contacto,
+  Documento,
 } from './entities';
 
 @Module({
@@ -28,6 +30,8 @@ import {
       Modulo,
       Persona,
       Configuracion,
+      Contacto,
+      Documento,
     ]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

@@ -2,15 +2,11 @@ import {
   Entity,
   Column,
   OneToOne,
-  OneToMany,
   JoinColumn,
-  UpdateDateColumn,
-  CreateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
 } from 'typeorm';
 
-import { Contacto, Documento } from '.';
 import { Persona } from 'src/auth/entities';
 import { Genero, Municipio } from 'src/custom/entities';
 
@@ -39,26 +35,4 @@ export class Paciente {
   @ManyToOne(() => Municipio, (municipio) => municipio.paciente)
   @JoinColumn({ name: 'municipio_id' })
   municipio: Municipio;
-
-  @OneToMany(() => Contacto, (contacto) => contacto.paciente, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-    cascade: true,
-    eager: true,
-  })
-  contactos: Contacto[];
-
-  @OneToMany(() => Documento, (documento) => documento.paciente, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-    cascade: true,
-    eager: true,
-  })
-  documentos: Documento[];
-
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
 }

@@ -82,10 +82,14 @@ export class AuthService {
       const administrador = await repositoryPerfil.findOne({
         where: { id: 1 },
       });
-      const persona = new Persona({ nombre: 'Edwin', apellido: 'Melara' });
+      const persona = new Persona({
+        nombre: 'Administrador',
+        apellido: 'Administrador',
+        type: 'ADMIN',
+      });
       const usuario = new Usuario({
         password: 'password',
-        usuario: 'melara0606',
+        usuario: 'administrador',
       });
       usuario.persona = persona;
       usuario.perfils = [administrador];

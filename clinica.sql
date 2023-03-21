@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 19-03-2023 a las 19:13:44
+-- Tiempo de generación: 21-03-2023 a las 02:59:15
 -- Versión del servidor: 8.0.32-0ubuntu0.20.04.2
 -- Versión de PHP: 7.4.3-4ubuntu2.18
 
@@ -79,10 +79,10 @@ INSERT INTO `ctl_generos` (`id`, `nombre`) VALUES
 
 CREATE TABLE `ctl_modulos` (
   `id` bigint UNSIGNED NOT NULL,
-  `nombre` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `url` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `icon` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `name` varchar(25) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL
+  `nombre` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `url` varchar(50) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `icon` varchar(20) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `name` varchar(25) COLLATE utf8mb3_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
 
 --
@@ -406,7 +406,7 @@ INSERT INTO `ctl_perfiles_roles` (`perfil_id`, `rol_id`) VALUES
 
 CREATE TABLE `ctl_perfils` (
   `id` bigint UNSIGNED NOT NULL,
-  `nombre` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL
+  `nombre` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
 
 --
@@ -425,7 +425,7 @@ INSERT INTO `ctl_perfils` (`id`, `nombre`) VALUES
 
 CREATE TABLE `ctl_roles` (
   `id` bigint UNSIGNED NOT NULL,
-  `nombre` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `nombre` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL,
   `modulo_id` bigint UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
 
@@ -485,18 +485,6 @@ INSERT INTO `ctl_tipo_documento` (`id`, `nombre`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `migrations`
---
-
-CREATE TABLE `migrations` (
-  `id` int NOT NULL,
-  `timestamp` bigint NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `mnt_configuracion`
 --
 
@@ -524,61 +512,10 @@ CREATE TABLE `mnt_pacientes` (
   `fecha_nacimiento` date NOT NULL,
   `direccion` text COLLATE utf8mb3_spanish2_ci NOT NULL,
   `numero_expendiente` varchar(20) COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
   `genero_id` int UNSIGNED DEFAULT NULL,
   `persona_id` bigint UNSIGNED DEFAULT NULL,
   `municipio_id` int UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
---
--- Volcado de datos para la tabla `mnt_pacientes`
---
-
-INSERT INTO `mnt_pacientes` (`id`, `fecha_nacimiento`, `direccion`, `numero_expendiente`, `created_at`, `updated_at`, `genero_id`, `persona_id`, `municipio_id`) VALUES
-(1, '1990-06-06', 'Canton San Antonio, Villa El Carmen.', '00001-2023', '2023-03-18 23:33:26.000000', '2023-03-18 23:33:54.130478', 1, 1, 186);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `mnt_pacientes_contactos`
---
-
-CREATE TABLE `mnt_pacientes_contactos` (
-  `id` bigint NOT NULL,
-  `numero_contacto` varchar(50) COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `paciente_id` bigint UNSIGNED DEFAULT NULL,
-  `tipo_contacto_id` int UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
---
--- Volcado de datos para la tabla `mnt_pacientes_contactos`
---
-
-INSERT INTO `mnt_pacientes_contactos` (`id`, `numero_contacto`, `paciente_id`, `tipo_contacto_id`) VALUES
-(1, '78583294', 1, 2),
-(2, '23015370', 1, 2);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `mnt_pacientes_documentos`
---
-
-CREATE TABLE `mnt_pacientes_documentos` (
-  `id` bigint NOT NULL,
-  `numero_documento` varchar(25) COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `paciente_id` bigint UNSIGNED DEFAULT NULL,
-  `documento_id` int UNSIGNED DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
---
--- Volcado de datos para la tabla `mnt_pacientes_documentos`
---
-
-INSERT INTO `mnt_pacientes_documentos` (`id`, `numero_documento`, `paciente_id`, `documento_id`) VALUES
-(1, '04299854-0', 1, 1),
-(2, '0521-060690-101-4', 1, 2);
 
 -- --------------------------------------------------------
 
@@ -588,16 +525,38 @@ INSERT INTO `mnt_pacientes_documentos` (`id`, `numero_documento`, `paciente_id`,
 
 CREATE TABLE `mnt_personas` (
   `id` bigint UNSIGNED NOT NULL,
-  `nombre` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `apellido` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL
+  `nombre` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `apellido` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `type` enum('ADMIN','PACIENT') COLLATE utf8mb3_spanish2_ci NOT NULL DEFAULT 'PACIENT',
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `updated_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `mnt_personas`
+-- Estructura de tabla para la tabla `mnt_personas_contactos`
 --
 
-INSERT INTO `mnt_personas` (`id`, `nombre`, `apellido`) VALUES
-(1, 'Edwin', 'Melara');
+CREATE TABLE `mnt_personas_contactos` (
+  `id` bigint NOT NULL,
+  `numero_contacto` varchar(50) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `persona_id` bigint UNSIGNED DEFAULT NULL,
+  `tipo_contacto_id` int UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mnt_personas_documentos`
+--
+
+CREATE TABLE `mnt_personas_documentos` (
+  `id` bigint NOT NULL,
+  `numero_documento` varchar(25) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `persona_id` bigint UNSIGNED DEFAULT NULL,
+  `documento_id` int UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
 
 -- --------------------------------------------------------
 
@@ -607,17 +566,10 @@ INSERT INTO `mnt_personas` (`id`, `nombre`, `apellido`) VALUES
 
 CREATE TABLE `mnt_usuarios` (
   `id` bigint UNSIGNED NOT NULL,
-  `usuario` varchar(30) CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
-  `password` text CHARACTER SET utf8mb3 COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `usuario` varchar(30) COLLATE utf8mb3_spanish2_ci NOT NULL,
+  `password` text COLLATE utf8mb3_spanish2_ci NOT NULL,
   `persona_id` bigint UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
---
--- Volcado de datos para la tabla `mnt_usuarios`
---
-
-INSERT INTO `mnt_usuarios` (`id`, `usuario`, `password`, `persona_id`) VALUES
-(3, 'administrador', '$2b$10$cPx9Lsb.OYniNyzb1jqrCe50kTjyAl5.QJhbneIMH0CeBO.qvEr56', 1);
 
 -- --------------------------------------------------------
 
@@ -629,13 +581,6 @@ CREATE TABLE `mnt_usuario_perfils` (
   `usuario_id` bigint UNSIGNED NOT NULL,
   `perfil_id` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_spanish2_ci;
-
---
--- Volcado de datos para la tabla `mnt_usuario_perfils`
---
-
-INSERT INTO `mnt_usuario_perfils` (`usuario_id`, `perfil_id`) VALUES
-(3, 1);
 
 --
 -- Índices para tablas volcadas
@@ -701,12 +646,6 @@ ALTER TABLE `ctl_tipo_documento`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indices de la tabla `migrations`
---
-ALTER TABLE `migrations`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indices de la tabla `mnt_configuracion`
 --
 ALTER TABLE `mnt_configuracion`
@@ -717,31 +656,31 @@ ALTER TABLE `mnt_configuracion`
 --
 ALTER TABLE `mnt_pacientes`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `REL_d821e9a79286c42e202ba20212` (`genero_id`),
   ADD UNIQUE KEY `REL_a173dda32fa3e6d170dcad1040` (`persona_id`),
-  ADD UNIQUE KEY `REL_72dc22f6dd8d3be604093dc9fb` (`municipio_id`);
-
---
--- Indices de la tabla `mnt_pacientes_contactos`
---
-ALTER TABLE `mnt_pacientes_contactos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_98f0aacd5868836625a9a87e10b` (`paciente_id`),
-  ADD KEY `FK_879f5ba278aeda0782a508923a6` (`tipo_contacto_id`);
-
---
--- Indices de la tabla `mnt_pacientes_documentos`
---
-ALTER TABLE `mnt_pacientes_documentos`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `FK_cd898fffe319eca6d0a40f53b3e` (`paciente_id`),
-  ADD KEY `FK_bfcefd741e0999875b0cc0a51b9` (`documento_id`);
+  ADD KEY `FK_d821e9a79286c42e202ba202126` (`genero_id`),
+  ADD KEY `FK_72dc22f6dd8d3be604093dc9fbd` (`municipio_id`);
 
 --
 -- Indices de la tabla `mnt_personas`
 --
 ALTER TABLE `mnt_personas`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `mnt_personas_contactos`
+--
+ALTER TABLE `mnt_personas_contactos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_1b7f7bab1519eeb8b38e90b639c` (`persona_id`),
+  ADD KEY `FK_689949a710e8bbd4a78542709df` (`tipo_contacto_id`);
+
+--
+-- Indices de la tabla `mnt_personas_documentos`
+--
+ALTER TABLE `mnt_personas_documentos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_0c478537f71e12a28fa78d84cc8` (`persona_id`),
+  ADD KEY `FK_76b11173111755bb8ff1b5838d5` (`documento_id`);
 
 --
 -- Indices de la tabla `mnt_usuarios`
@@ -797,7 +736,7 @@ ALTER TABLE `ctl_perfils`
 -- AUTO_INCREMENT de la tabla `ctl_roles`
 --
 ALTER TABLE `ctl_roles`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `ctl_tipo_contacto`
@@ -812,12 +751,6 @@ ALTER TABLE `ctl_tipo_documento`
   MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `migrations`
---
-ALTER TABLE `migrations`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT de la tabla `mnt_configuracion`
 --
 ALTER TABLE `mnt_configuracion`
@@ -827,31 +760,31 @@ ALTER TABLE `mnt_configuracion`
 -- AUTO_INCREMENT de la tabla `mnt_pacientes`
 --
 ALTER TABLE `mnt_pacientes`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `mnt_pacientes_contactos`
---
-ALTER TABLE `mnt_pacientes_contactos`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT de la tabla `mnt_pacientes_documentos`
---
-ALTER TABLE `mnt_pacientes_documentos`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `mnt_personas`
 --
 ALTER TABLE `mnt_personas`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `mnt_personas_contactos`
+--
+ALTER TABLE `mnt_personas_contactos`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `mnt_personas_documentos`
+--
+ALTER TABLE `mnt_personas_documentos`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `mnt_usuarios`
 --
 ALTER TABLE `mnt_usuarios`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
@@ -885,18 +818,18 @@ ALTER TABLE `mnt_pacientes`
   ADD CONSTRAINT `FK_d821e9a79286c42e202ba202126` FOREIGN KEY (`genero_id`) REFERENCES `ctl_generos` (`id`);
 
 --
--- Filtros para la tabla `mnt_pacientes_contactos`
+-- Filtros para la tabla `mnt_personas_contactos`
 --
-ALTER TABLE `mnt_pacientes_contactos`
-  ADD CONSTRAINT `FK_879f5ba278aeda0782a508923a6` FOREIGN KEY (`tipo_contacto_id`) REFERENCES `ctl_tipo_contacto` (`id`),
-  ADD CONSTRAINT `FK_98f0aacd5868836625a9a87e10b` FOREIGN KEY (`paciente_id`) REFERENCES `mnt_pacientes` (`id`);
+ALTER TABLE `mnt_personas_contactos`
+  ADD CONSTRAINT `FK_1b7f7bab1519eeb8b38e90b639c` FOREIGN KEY (`persona_id`) REFERENCES `mnt_personas` (`id`),
+  ADD CONSTRAINT `FK_689949a710e8bbd4a78542709df` FOREIGN KEY (`tipo_contacto_id`) REFERENCES `ctl_tipo_contacto` (`id`);
 
 --
--- Filtros para la tabla `mnt_pacientes_documentos`
+-- Filtros para la tabla `mnt_personas_documentos`
 --
-ALTER TABLE `mnt_pacientes_documentos`
-  ADD CONSTRAINT `FK_bfcefd741e0999875b0cc0a51b9` FOREIGN KEY (`documento_id`) REFERENCES `ctl_tipo_documento` (`id`),
-  ADD CONSTRAINT `FK_cd898fffe319eca6d0a40f53b3e` FOREIGN KEY (`paciente_id`) REFERENCES `mnt_pacientes` (`id`);
+ALTER TABLE `mnt_personas_documentos`
+  ADD CONSTRAINT `FK_0c478537f71e12a28fa78d84cc8` FOREIGN KEY (`persona_id`) REFERENCES `mnt_personas` (`id`),
+  ADD CONSTRAINT `FK_76b11173111755bb8ff1b5838d5` FOREIGN KEY (`documento_id`) REFERENCES `ctl_tipo_documento` (`id`);
 
 --
 -- Filtros para la tabla `mnt_usuarios`

@@ -6,10 +6,10 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-import { Paciente } from '.';
+import { Persona } from '.';
 import { TipoContacto } from 'src/custom/entities';
 
-@Entity('mnt_pacientes_contactos')
+@Entity('mnt_personas_contactos')
 export class Contacto {
   @PrimaryGeneratedColumn({ name: 'id', type: 'bigint' })
   id?: number;
@@ -17,14 +17,11 @@ export class Contacto {
   @Column({ name: 'numero_contacto', type: 'varchar', length: 50 })
   numeroContacto: string;
 
-  @ManyToOne(() => Paciente, (paciente) => paciente.contactos)
-  @JoinColumn({ name: 'paciente_id' })
-  paciente?: Paciente;
+  @ManyToOne(() => Persona, (persona) => persona.contactos)
+  @JoinColumn({ name: 'persona_id' })
+  persona: Persona;
 
-  @ManyToOne(
-    () => TipoContacto,
-    (tipoContacto) => tipoContacto.contactoPaciente,
-  )
+  @ManyToOne(() => TipoContacto, (tipoContacto) => tipoContacto.contactoPersona)
   @JoinColumn({ name: 'tipo_contacto_id' })
   tipo: TipoContacto;
 }

@@ -26,8 +26,7 @@ import { CustomModule } from './custom/custom.module';
       autoLoadEntities: true,
       ssl: true,
       logging: true,
-      migrationsRun: true,
-      migrationsTableName: 'migrations',
+      migrationsRun: false,
       extra: {
         ssl: {
           rejectUnauthorized: false,
