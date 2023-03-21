@@ -8,7 +8,7 @@ export class TipoContacto {
   id: number;
 
   @Column({ name: 'nombre', type: 'varchar', length: 35 })
-  nombre: string;
+  nombre?: string;
 
   @OneToMany(() => ContactoPersona, (contacto) => contacto.tipo)
   contactoPersona?: ContactoPersona;

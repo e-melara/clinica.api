@@ -51,7 +51,6 @@ export class Persona {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
     cascade: true,
-    eager: true,
   })
   contactos: Contacto[];
 
@@ -59,7 +58,6 @@ export class Persona {
     onDelete: 'NO ACTION',
     onUpdate: 'NO ACTION',
     cascade: true,
-    eager: true,
   })
   documentos: Documento[];
 

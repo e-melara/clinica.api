@@ -16,11 +16,11 @@ export class Municipio {
   id: number;
 
   @Column({ name: 'nombre', type: 'varchar', length: 50 })
-  nombre: string;
+  nombre?: string;
 
   @ManyToOne(() => Departamento, (departamento) => departamento.municipio)
   @JoinColumn({ name: 'departamento_id' })
-  departamento: Departamento;
+  departamento?: Departamento;
 
   @OneToMany(() => Paciente, (paciente) => paciente.genero)
   paciente?: Paciente;

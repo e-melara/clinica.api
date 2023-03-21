@@ -8,7 +8,7 @@ export class TipoDocumento {
   id: number;
 
   @Column({ name: 'nombre', type: 'varchar', length: 35 })
-  nombre: string;
+  nombre?: string;
 
   @OneToMany(() => DocumentoPersona, (documento) => documento.tipo)
   documentoPersona?: DocumentoPersona;

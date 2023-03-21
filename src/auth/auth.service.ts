@@ -62,7 +62,10 @@ export class AuthService {
       user: {
         id: user.id,
         perfil: user.perfils,
-        persona: user.persona,
+        persona: {
+          nombre: user.persona.nombre,
+          apellido: user.persona.apellido,
+        },
         usuario: user.usuario,
       },
       token: this.getJWTToken({

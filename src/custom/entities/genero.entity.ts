@@ -8,7 +8,7 @@ export class Genero {
   id: number;
 
   @Column({ name: 'nombre', type: 'varchar', length: 20 })
-  nombre: string;
+  nombre?: string;
 
   @OneToMany(() => Paciente, (paciente) => paciente.genero)
   paciente?: Paciente;

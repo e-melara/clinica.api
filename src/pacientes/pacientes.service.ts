@@ -2,15 +2,9 @@ import * as moment from 'moment-timezone';
 import { DataSource, QueryRunner } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import {
-  Genero,
-  Municipio,
-  TipoContacto,
-  TipoDocumento,
-} from 'src/custom/entities';
-import { Persona, Configuracion } from 'src/auth/entities';
 import { Paciente } from './entities';
 import { PacienteCreateDto } from './dto/paciente-create.dto';
+import { Persona, Configuracion, Documento, Contacto } from 'src/auth/entities';
 
 @Injectable()
 export class PacientesService {
@@ -21,25 +15,31 @@ export class PacientesService {
     await queryRunner.connect();
     try {
       await queryRunner.startTransaction();
-      const municipio = await queryRunner.manager.findOne(Municipio, {
-        where: { id: item.municipio },
-      });
-
-      const genero = await queryRunner.manager.findOne(Genero, {
-        where: { id: item.genero },
-      });
-
       const persona = new Persona({
         apellido: item.apellido,
         nombre: item.nombre,
+        type: 'PACIENT',
       });
+
+      // asigando los documentos a la persona
+      persona.documentos = item.documentos.map(
+        (doc) =>
+          new Documento({ numeroDocumento: doc.numero, tipo: { id: doc.id } }),
+      );
+
+      // asignando los contactos a la persona
+      persona.contactos = item.contactos.map(
+        (item) =>
+          new Contacto({ numeroContacto: item.numero, tipo: { id: item.id } }),
+      );
+
       await queryRunner.manager.save(persona);
       const codigo = await this.createNumeroExpendiente(queryRunner);
 
       const paciente = new Paciente();
-      paciente.genero = genero;
       paciente.persona = persona;
-      paciente.municipio = municipio;
+      paciente.genero = { id: item.genero };
+      paciente.municipio = { id: item.municipio };
 
       paciente.numeroExpendiente = codigo;
       paciente.direccion = item.direccion;
@@ -67,13 +67,6 @@ export class PacientesService {
     const year = moment().format('YYYY');
     const zeroInitial = '0'.repeat(size <= 0 ? 0 : size);
     const numeroExpendiente = `${zeroInitial}${+valor}-${year}`;
-    console.log({
-      valor,
-      size,
-      year,
-      zeroInitial,
-      numeroExpendiente,
-    });
 
     item.valor = (parseInt(valor) + 1).toString();
     await runner.manager.save(item);

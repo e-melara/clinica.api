@@ -11,6 +11,10 @@ import { TipoDocumento } from 'src/custom/entities';
 
 @Entity('mnt_personas_documentos')
 export class Documento {
+  constructor(init?: Partial<Documento>) {
+    Object.assign(this, init);
+  }
+
   @PrimaryGeneratedColumn({ name: 'id', type: 'bigint' })
   id: number;
 
@@ -26,5 +30,5 @@ export class Documento {
     (tipoDocumento) => tipoDocumento.documentoPersona,
   )
   @JoinColumn({ name: 'documento_id' })
-  tipo: Documento;
+  tipo: TipoDocumento;
 }

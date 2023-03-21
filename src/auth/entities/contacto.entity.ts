@@ -11,6 +11,9 @@ import { TipoContacto } from 'src/custom/entities';
 
 @Entity('mnt_personas_contactos')
 export class Contacto {
+  constructor(partial: Partial<Contacto>) {
+    Object.assign(this, partial);
+  }
   @PrimaryGeneratedColumn({ name: 'id', type: 'bigint' })
   id?: number;
 
@@ -19,7 +22,7 @@ export class Contacto {
 
   @ManyToOne(() => Persona, (persona) => persona.contactos)
   @JoinColumn({ name: 'persona_id' })
-  persona: Persona;
+  persona?: Persona;
 
   @ManyToOne(() => TipoContacto, (tipoContacto) => tipoContacto.contactoPersona)
   @JoinColumn({ name: 'tipo_contacto_id' })
