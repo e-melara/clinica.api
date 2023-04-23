@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { CustomService } from './custom.service';
 
 @Controller('customs')
@@ -11,12 +11,12 @@ export class CustomController {
   }
 
   @Get('/departamentos/:id')
-  async departamento(id: number) {
+  async departamento(@Param('id') id: number) {
     return await this.service.getDepartamento(id);
   }
 
   @Get('/municipio/:id')
-  async municipio(id: number) {
+  async municipio(@Param('id') id: number) {
     return await this.service.getMunicipio(id);
   }
 
@@ -26,7 +26,7 @@ export class CustomController {
   }
 
   @Get('/generos/:id')
-  async genero(id: number) {
+  async genero(@Param('id') id: number) {
     return await this.service.getGenero(id);
   }
 
@@ -36,7 +36,7 @@ export class CustomController {
   }
 
   @Get('/documentos/:id')
-  async documento(id: number) {
+  async documento(@Param('id') id: number) {
     return await this.service.getTipoDocumento(id);
   }
 
@@ -46,7 +46,7 @@ export class CustomController {
   }
 
   @Get('/contactos/:id')
-  async contacto(id: number) {
+  async contacto(@Param('id') id: number) {
     return await this.service.getTipoContacto(id);
   }
 }

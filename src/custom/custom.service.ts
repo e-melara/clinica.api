@@ -18,6 +18,7 @@ export class CustomService {
   }
 
   async getDepartamento(id: number) {
+    console.log({ id });
     const repository = this.dataSource.manager.getRepository(Departamento);
     return await repository.findOne({
       where: {

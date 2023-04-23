@@ -3,12 +3,45 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { Paciente } from './entities';
+import { PageOptionsDto } from './dto/page-options.dto';
 import { PacienteCreateDto } from './dto/paciente-create.dto';
 import { Persona, Configuracion, Documento, Contacto } from 'src/auth/entities';
 
 @Injectable()
 export class PacientesService {
   constructor(private readonly dataSource: DataSource) {}
+
+  async findAll(pageOptionsDto: PageOptionsDto) {
+    const respository = this.dataSource.manager.getRepository(Persona);
+    const queryBuilder = respository
+      .createQueryBuilder('persona')
+      .leftJoinAndSelect('persona.paciente', 'paciente')
+      .where('persona.type = :type', { type: 'PACIENT' });
+
+    if (pageOptionsDto.q) {
+      queryBuilder.andWhere(
+        'persona.nombre LIKE :q OR persona.apellido LIKE :q OR paciente.numero_expendiente LIKE :q',
+        { q: `%${pageOptionsDto.q}%` },
+      );
+    }
+
+    queryBuilder
+      .orderBy('persona.created_at', pageOptionsDto.orden)
+      .take(pageOptionsDto.cantidad_por_pagina)
+      .skip((pageOptionsDto.pagina - 1) * pageOptionsDto.cantidad_por_pagina);
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities();
+
+    return {
+      items: entities,
+      meta: {
+        total: itemCount,
+        pagina: pageOptionsDto.pagina,
+        cantidad_por_pagina: pageOptionsDto.cantidad_por_pagina,
+      },
+    };
+  }
 
   async create(item: PacienteCreateDto) {
     const queryRunner = this.dataSource.createQueryRunner();
