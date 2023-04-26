@@ -12,11 +12,10 @@ export class PacientesService {
   constructor(private readonly dataSource: DataSource) {}
 
   async findAll(pageOptionsDto: PageOptionsDto) {
-    const respository = this.dataSource.manager.getRepository(Persona);
+    const respository = this.dataSource.manager.getRepository(Paciente);
     const queryBuilder = respository
-      .createQueryBuilder('persona')
-      .leftJoinAndSelect('persona.paciente', 'paciente')
-      .where('persona.type = :type', { type: 'PACIENT' });
+      .createQueryBuilder('paciente')
+      .leftJoinAndSelect('paciente.persona', 'persona');
 
     if (pageOptionsDto.q) {
       queryBuilder.andWhere(
@@ -34,7 +33,14 @@ export class PacientesService {
     const { entities } = await queryBuilder.getRawAndEntities();
 
     return {
-      items: entities,
+      items: entities.map((item) => ({
+        id: item.id,
+        type: item.persona.type,
+        nombre: item.persona.nombre,
+        apellido: item.persona.apellido,
+        fechaNaacimiento: item.fechaNacimiento,
+        numero_expendiente: item.numeroExpendiente,
+      })),
       meta: {
         total: itemCount,
         pagina: pageOptionsDto.pagina,
