@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkfrontend"]=self["webpackChunkfrontend"]||[]).push([[177],{410:function(n,e,u){u.r(e),u.d(e,{default:function(){return c}});var t=function(){var n=this,e=n._self._c;return e("div")},r=[],l={name:"HomePage"},f=l,s=u(1001),a=(0,s.Z)(f,t,r,!1,null,null,null),c=a.exports}}]);
+//# sourceMappingURL=home.b6c3a365.js.map
