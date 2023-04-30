@@ -6,6 +6,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 
 // modules
 import { AuthModule } from './auth/auth.module';
+import { PacientesModule } from './pacientes/pacientes.module';
+import { CustomModule } from './custom/custom.module';
 
 @Module({
   imports: [
@@ -24,8 +26,7 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       ssl: true,
       logging: true,
-      migrationsRun: true,
-      migrationsTableName: 'migrations',
+      migrationsRun: false,
       extra: {
         ssl: {
           rejectUnauthorized: false,
@@ -33,6 +34,8 @@ import { AuthModule } from './auth/auth.module';
       },
     }),
     AuthModule,
+    CustomModule,
+    PacientesModule,
   ],
   controllers: [],
   providers: [],

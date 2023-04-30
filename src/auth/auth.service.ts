@@ -62,7 +62,10 @@ export class AuthService {
       user: {
         id: user.id,
         perfil: user.perfils,
-        persona: user.persona,
+        persona: {
+          nombre: user.persona.nombre,
+          apellido: user.persona.apellido,
+        },
         usuario: user.usuario,
       },
       token: this.getJWTToken({
@@ -82,10 +85,14 @@ export class AuthService {
       const administrador = await repositoryPerfil.findOne({
         where: { id: 1 },
       });
-      const persona = new Persona({ nombre: 'Edwin', apellido: 'Melara' });
+      const persona = new Persona({
+        nombre: 'Administrador',
+        apellido: 'Administrador',
+        type: 'ADMIN',
+      });
       const usuario = new Usuario({
         password: 'password',
-        usuario: 'melara0606',
+        usuario: 'administrador',
       });
       usuario.persona = persona;
       usuario.perfils = [administrador];
