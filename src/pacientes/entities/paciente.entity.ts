@@ -5,8 +5,10 @@ import {
   JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
+import { HistoricoPaciente } from './';
 import { Persona } from 'src/auth/entities';
 import { Genero, Municipio } from 'src/custom/entities';
 
@@ -35,4 +37,7 @@ export class Paciente {
   @ManyToOne(() => Municipio, (municipio) => municipio.paciente)
   @JoinColumn({ name: 'municipio_id' })
   municipio: Municipio;
+
+  @OneToMany(() => HistoricoPaciente, (historico) => historico.paciente)
+  historicos: HistoricoPaciente[];
 }
