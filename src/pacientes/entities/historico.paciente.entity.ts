@@ -1,12 +1,12 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  OneToMany,
   JoinColumn,
   ManyToOne,
+  Column,
 } from 'typeorm';
 
-import { Step, Paciente, HistoricoDetallePaciente } from './';
+import { Step, Paciente } from './';
 
 @Entity('mnt_historico_paciente')
 export class HistoricoPaciente {
@@ -21,6 +21,6 @@ export class HistoricoPaciente {
   @JoinColumn({ name: 'step_id' })
   step: Step;
 
-  @OneToMany(() => HistoricoDetallePaciente, (detalle) => detalle.historico)
-  detalles: HistoricoDetallePaciente[];
+  @Column({ name: 'valor', type: 'json' })
+  valor: JSON;
 }

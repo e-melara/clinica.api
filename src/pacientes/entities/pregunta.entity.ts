@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { StepPregunta } from './step.pregunta.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import { Step } from './';
 
 @Entity('ctl_preguntas')
 export class Pregunta {
@@ -15,6 +15,9 @@ export class Pregunta {
   @Column({ name: 'valor', type: 'varchar', length: 5 })
   valor: String;
 
-  @OneToMany(() => StepPregunta, (step) => step.preguntas)
-  preguntas: StepPregunta[];
+  @ManyToMany(() => Step, (step) => step.preguntas, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  steps?: Step[];
 }

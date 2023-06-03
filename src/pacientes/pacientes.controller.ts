@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators';
 
 import { PacienteCreateDto } from './dto/paciente-create.dto';
@@ -19,5 +19,13 @@ export class PacientesController {
   @Auth([])
   async getAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.service.findAll(pageOptionsDto);
+  }
+
+  @Get('step/:id/:paciente_id')
+  async getStep(
+    @Param('id') id: number,
+    @Param('paciente_id') pacienteId: number,
+  ) {
+    return await this.service.getStep(id, pacienteId);
   }
 }

@@ -2,7 +2,7 @@ import * as moment from 'moment-timezone';
 import { DataSource, QueryRunner } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { Paciente } from './entities';
+import { Paciente, Step } from './entities';
 import { PageOptionsDto } from './dto/page-options.dto';
 import { PacienteCreateDto } from './dto/paciente-create.dto';
 import { Persona, Configuracion, Documento, Contacto } from 'src/auth/entities';
@@ -110,5 +110,20 @@ export class PacientesService {
     item.valor = (parseInt(valor) + 1).toString();
     await runner.manager.save(item);
     return numeroExpendiente;
+  }
+
+  // steps services
+  async getStep(id: number, pacienteId: number) {
+    const respository = this.dataSource.manager.getRepository(Step);
+    const step = await respository.find({
+      where: { id: id },
+      relations: ['preguntas'],
+    });
+
+    if (!step) {
+      throw new BadRequestException('step not found');
+    }
+
+    return step;
   }
 }
