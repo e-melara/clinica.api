@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import * as moment from 'moment-timezone';
 import {
   DataSource,
@@ -62,13 +63,16 @@ export class PacientesService {
   async findById<Entity extends NamedThing>(
     where: FindOptionsWhere<Entity>,
     target: EntityTarget<Entity>,
+    relations?: string[],
+    throwError: boolean = true,
   ) {
     const element = await this.dataSource.manager
       .getRepository<Entity>(target)
       .findOne({
         where,
+        relations,
       });
-    if (!element) {
+    if (!element && throwError) {
       throw new BadRequestException(`Elemento no encontrado`);
     }
     return element;
@@ -139,16 +143,60 @@ export class PacientesService {
 
   // steps services
   async getStep(id: number, pacienteId: number) {
-    const respository = this.dataSource.manager.getRepository(Step);
-    const step = await respository.find({
-      where: { id: id },
-      relations: ['preguntas'],
-    });
+    let isNew = true;
+    let idUpdated = 0;
+    let notChecked = false;
+    const step = await this.findById({ id }, Step, ['preguntas']);
 
     if (!step) {
       throw new BadRequestException('step not found');
     }
 
+    const stepPaciente = await this.findById(
+      { step: { id }, paciente: { id: pacienteId } },
+      HistoricoPaciente,
+      [],
+      false,
+    );
+
+    if (stepPaciente) {
+      isNew = false;
+      idUpdated = stepPaciente.id;
+      const { valor } = stepPaciente;
+      const group = _.groupBy(valor, 'codigo');
+      const keys = Object.keys(group);
+
+      if (group && keys.length > 0 && !keys.includes('P27')) {
+        const { preguntas, id } = step;
+        step.preguntas = preguntas.map((pregunta) => {
+          const { codigo, ...restQuestion } = pregunta;
+          const exits = group[`${codigo}`];
+          if (exits && exits.length > 0) {
+            if ([2, 4].includes(+id)) {
+              const [valueSave] = exits;
+              return {
+                ...pregunta,
+                valor: '1',
+                show: true,
+                inputs: valueSave['inputs'],
+              };
+            }
+            return {
+              ...pregunta,
+              valor: '1',
+            };
+          }
+          return pregunta;
+        });
+      } else {
+        notChecked = true;
+      }
+    }
+
+    // asignado el valor de is_new
+    step['is_new'] = isNew;
+    step['idUpdated'] = idUpdated;
+    step['not_posee'] = notChecked;
     return step;
   }
 

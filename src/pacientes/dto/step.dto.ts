@@ -16,9 +16,6 @@ export class Item {
   @IsString({ message: 'Codigo de la pregunta es necesaria' })
   codigo: number;
 
-  @IsNumber({}, { message: 'El paso es obligatorio' })
-  step_id: string;
-
   @IsObject()
   @IsOptional()
   inputs: any;

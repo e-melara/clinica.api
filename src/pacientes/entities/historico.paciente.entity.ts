@@ -25,14 +25,6 @@ export class HistoricoPaciente {
     name: 'valor',
     type: 'json',
     nullable: true,
-    transformer: {
-      to(value: object[]): string {
-        return JSON.stringify(value);
-      },
-      from(value: string): object[] {
-        return JSON.parse(value);
-      },
-    },
   })
   valor: object[];
 }
