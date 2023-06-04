@@ -1,11 +1,21 @@
 import * as moment from 'moment-timezone';
-import { DataSource, QueryRunner } from 'typeorm';
+import {
+  DataSource,
+  EntityTarget,
+  FindOptionsWhere,
+  QueryRunner,
+} from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { Paciente, Step } from './entities';
+import { StepCreateDto } from './dto/step.dto';
 import { PageOptionsDto } from './dto/page-options.dto';
 import { PacienteCreateDto } from './dto/paciente-create.dto';
+import { HistoricoPaciente, Paciente, Step } from './entities';
 import { Persona, Configuracion, Documento, Contacto } from 'src/auth/entities';
+
+interface NamedThing {
+  id: number;
+}
 
 @Injectable()
 export class PacientesService {
@@ -47,6 +57,21 @@ export class PacientesService {
         cantidad_por_pagina: pageOptionsDto.cantidad_por_pagina,
       },
     };
+  }
+
+  async findById<Entity extends NamedThing>(
+    where: FindOptionsWhere<Entity>,
+    target: EntityTarget<Entity>,
+  ) {
+    const element = await this.dataSource.manager
+      .getRepository<Entity>(target)
+      .findOne({
+        where,
+      });
+    if (!element) {
+      throw new BadRequestException(`Elemento no encontrado`);
+    }
+    return element;
   }
 
   async create(item: PacienteCreateDto) {
@@ -125,5 +150,52 @@ export class PacientesService {
     }
 
     return step;
+  }
+
+  async storeStep(step: StepCreateDto) {
+    const {
+      id,
+      is_new: isNew,
+      paciente_id: pacienteId,
+      step_id: stepId,
+      preguntas,
+    } = step;
+
+    if (!isNew && !id) {
+      throw new BadRequestException(
+        'id es necesario para poder actualizar el step',
+      );
+    }
+
+    let message = '';
+    const queryRunner = this.dataSource.createQueryRunner();
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+      if (isNew) {
+        const step = await this.findById({ id: stepId }, Step);
+        const paciente = await this.findById({ id: pacienteId }, Paciente);
+
+        const historico = new HistoricoPaciente();
+        historico.step = step;
+        historico.valor = preguntas;
+        historico.paciente = paciente;
+        await queryRunner.manager.save(historico);
+        message = 'Datos guardados correctamente';
+      } else {
+        const historico = await this.findById({ id }, HistoricoPaciente);
+        historico.valor = preguntas;
+        await queryRunner.manager.save(historico);
+        message = 'Datos actualizados correctamente';
+      }
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+
+      return { message };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw new BadRequestException(error.message);
+    }
   }
 }

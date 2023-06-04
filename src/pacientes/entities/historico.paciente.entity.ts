@@ -21,6 +21,18 @@ export class HistoricoPaciente {
   @JoinColumn({ name: 'step_id' })
   step: Step;
 
-  @Column({ name: 'valor', type: 'json' })
-  valor: JSON;
+  @Column({
+    name: 'valor',
+    type: 'json',
+    nullable: true,
+    transformer: {
+      to(value: object[]): string {
+        return JSON.stringify(value);
+      },
+      from(value: string): object[] {
+        return JSON.parse(value);
+      },
+    },
+  })
+  valor: object[];
 }
