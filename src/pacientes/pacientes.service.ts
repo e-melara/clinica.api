@@ -60,18 +60,59 @@ export class PacientesService {
     };
   }
 
+  async getFindOne(pacienteId: number) {
+    return await this.findById({ id: pacienteId }, Paciente, [
+      'municipio.departamento',
+      'persona.documentos.tipo',
+      'persona.contactos.tipo',
+    ]).then((paciente) => {
+      const response = {};
+      const { municipio, persona, ...restPaciente } = paciente;
+      const { documentos, contactos, ...restPersona } = persona;
+
+      response['persona'] = restPersona;
+      response['paciente'] = restPaciente;
+      response['municipio_id'] = municipio.id;
+      response['departamento_id'] = municipio.departamento.id;
+      response['documentos'] = documentos.map(
+        ({ id, numeroDocumento, tipo }) => ({
+          id,
+          numero_documento: numeroDocumento,
+          tipo_documento: tipo.nombre,
+        }),
+      );
+      response['contactos'] = contactos.map(({ id, numeroContacto, tipo }) => ({
+        id,
+        numero_contacto: numeroContacto,
+        tipo_contacto: tipo.nombre,
+      }));
+      return response;
+    });
+  }
+
   async findById<Entity extends NamedThing>(
     where: FindOptionsWhere<Entity>,
     target: EntityTarget<Entity>,
     relations?: string[],
-    throwError: boolean = true,
+    throwError = true,
+    select?: string[],
   ) {
+    const options = {};
+    if (relations) {
+      options['relations'] = relations;
+    }
+    if (!where) {
+      throw new BadRequestException(`No se ha enviado el id`);
+    }
+    options['where'] = where;
+
+    if (select) {
+      options['select'] = select;
+    }
+
     const element = await this.dataSource.manager
       .getRepository<Entity>(target)
-      .findOne({
-        where,
-        relations,
-      });
+      .findOne(options);
     if (!element && throwError) {
       throw new BadRequestException(`Elemento no encontrado`);
     }

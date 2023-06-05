@@ -22,6 +22,12 @@ export class PacientesController {
     return this.service.findAll(pageOptionsDto);
   }
 
+  @Get('/:id')
+  @Auth([])
+  async getFindOne(@Param('id') id: number) {
+    return this.service.getFindOne(id);
+  }
+
   @Get('step/:id/:paciente_id')
   @Auth(['ROL_PATIENTS_ADD'])
   async getStep(
