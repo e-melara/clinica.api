@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators';
 
-import { PacienteCreateDto } from './dto/paciente-create.dto';
+import { StepCreateDto } from './dto/step.dto';
 import { PacientesService } from './pacientes.service';
 import { PageOptionsDto } from './dto/page-options.dto';
+import { PacienteCreateDto } from './dto/paciente-create.dto';
 
 @Controller('pacientes')
 export class PacientesController {
@@ -19,5 +20,26 @@ export class PacientesController {
   @Auth([])
   async getAll(@Query() pageOptionsDto: PageOptionsDto) {
     return this.service.findAll(pageOptionsDto);
+  }
+
+  @Get('/:id')
+  @Auth([])
+  async getFindOne(@Param('id') id: number) {
+    return this.service.getFindOne(id);
+  }
+
+  @Get('step/:id/:paciente_id')
+  @Auth(['ROL_PATIENTS_ADD'])
+  async getStep(
+    @Param('id') id: number,
+    @Param('paciente_id') pacienteId: number,
+  ) {
+    return await this.service.getStep(id, pacienteId);
+  }
+
+  @Post('step')
+  @Auth(['ROL_PATIENTS_ADD'])
+  async storeStep(@Body() step: StepCreateDto) {
+    return await this.service.storeStep(step);
   }
 }
