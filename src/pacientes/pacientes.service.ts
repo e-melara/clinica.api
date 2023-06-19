@@ -111,6 +111,40 @@ export class PacientesService {
         return element;
     }
 
+  async update(item:PacienteCreateDto, id: number) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      await queryRunner.startTransaction()
+      const { nombre, apellido, genero,direccion, municipio, fecha_nacimiento, contactos, documentos } = item;
+      const persona = await this.findById({ id }, Persona, [
+        'documentos',
+        'contactos',
+        'paciente',
+      ])
+      
+      console.log(persona)
+      persona.nombre = nombre
+      persona.apellido = apellido
+      persona.paciente.fechaNacimiento = fecha_nacimiento
+      persona.paciente.direccion = direccion
+      persona.paciente.genero = { id: genero }
+      persona.paciente.municipio = {id: municipio}
+      console.log(persona)
+      
+      await queryRunner.manager.save(persona)
+      await queryRunner.commitTransaction()
+      await queryRunner.release()
+      return persona
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      await queryRunner.release()
+      throw new BadRequestException(error.message)
+    }
+  }
+  
+
     async create(item: PacienteCreateDto) {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
@@ -191,7 +225,7 @@ export class PacientesService {
             if (group && keys.length > 0 && !keys.includes('P27')) {
                 const { preguntas, id } = step;
                 step.preguntas = preguntas.map(pregunta => {
-                    const { codigo, ...restQuestion } = pregunta;
+                    const { codigo } = pregunta;
                     const exits = group[`${codigo}`];
                     if (exits && exits.length > 0) {
                         if ([2, 4].includes(+id)) {
