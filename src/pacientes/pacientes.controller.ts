@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Auth } from 'src/auth/decorators';
 
 import { StepCreateDto } from './dto/step.dto';
@@ -14,6 +14,15 @@ export class PacientesController {
   @Auth(['ROL_PATIENTS_ADD'])
   async create(@Body() paciente: PacienteCreateDto) {
     return this.service.create(paciente);
+  }
+
+  @Put('/:id')
+  @Auth([])
+  async update(
+    @Body() paciente: PacienteCreateDto,
+    @Param('id') id: number,
+  ) {
+    return this.service.update(paciente, id)
   }
 
   @Get()
