@@ -111,39 +111,44 @@ export class PacientesService {
         return element;
     }
 
-  async update(item:PacienteCreateDto, id: number) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
+    async update(item: PacienteCreateDto, id: number) {
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
+        let response: string | Persona;
+        try {
+            await queryRunner.startTransaction();
+            const { documentos, contactos, genero, municipio, fecha_nacimiento, direccion, ...toUpdate } = item;
+            const persona = await queryRunner.manager.getRepository(Persona).preload({ id, ...toUpdate });
+            const paciente = await queryRunner.manager.getRepository(Paciente).findOne({ where: { persona: { id } } });
 
-    try {
-      await queryRunner.startTransaction()
-      const { nombre, apellido, genero,direccion, municipio, fecha_nacimiento, contactos, documentos } = item;
-      const persona = await this.findById({ id }, Persona, [
-        'documentos',
-        'contactos',
-        'paciente',
-      ])
-      
-      console.log(persona)
-      persona.nombre = nombre
-      persona.apellido = apellido
-      persona.paciente.fechaNacimiento = fecha_nacimiento
-      persona.paciente.direccion = direccion
-      persona.paciente.genero = { id: genero }
-      persona.paciente.municipio = {id: municipio}
-      console.log(persona)
-      
-      await queryRunner.manager.save(persona)
-      await queryRunner.commitTransaction()
-      await queryRunner.release()
-      return persona
-    } catch (error) {
-      await queryRunner.rollbackTransaction()
-      await queryRunner.release()
-      throw new BadRequestException(error.message)
+            if (documentos) {
+                await queryRunner.manager.getRepository(Documento).delete({ persona: { id } });
+                persona.documentos = documentos.map(doc => new Documento({ numeroDocumento: doc.numero, tipo: { id: doc.id } }));
+            }
+
+            if (contactos) {
+                await queryRunner.manager.getRepository(Contacto).delete({ persona: { id } });
+                persona.contactos = contactos.map(item => new Contacto({ numeroContacto: item.numero, tipo: { id: item.id } }));
+            }
+
+            paciente.direccion = direccion;
+            paciente.municipio = { id: municipio };
+            paciente.genero = { id: genero };
+            paciente.fechaNacimiento = fecha_nacimiento;
+
+            await queryRunner.manager.save(persona);
+            await queryRunner.manager.save(paciente);
+            await queryRunner.commitTransaction();
+            response = persona;
+        } catch (error) {
+            console.log(error);
+            await queryRunner.rollbackTransaction();
+            response = error;
+        } finally {
+            await queryRunner.release();
+        }
+        return response;
     }
-  }
-  
 
     async create(item: PacienteCreateDto) {
         const queryRunner = this.dataSource.createQueryRunner();
@@ -165,7 +170,7 @@ export class PacientesService {
             await queryRunner.manager.save(persona);
             const codigo = await this.createNumeroExpendiente(queryRunner);
 
-            const paciente = new Paciente();
+            const paciente = new Paciente({});
             paciente.persona = persona;
             paciente.genero = { id: item.genero };
             paciente.municipio = { id: item.municipio };
